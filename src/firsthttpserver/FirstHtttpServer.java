@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 
 /**
- * @author Lars Mortensen
+ * @author DHDC
  */
 public class FirstHtttpServer {
   static int port = 8080;
