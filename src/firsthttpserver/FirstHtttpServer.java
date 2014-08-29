@@ -29,6 +29,20 @@ public class FirstHtttpServer {
     @Override
     public void handle(HttpExchange he) throws IOException {
       String response = "welcome to my very first almost home made Web Server :-)";
+      
+      StringBuilder sb = new StringBuilder();
+      sb.append("<!DOCTYPE html>\n");
+      sb.append("<html>\n");
+      sb.append("<head>\n");
+      sb.append("<title>My fancy Web Site</title>\n");
+      sb.append("<meta charset='UTF-8'>\n");
+      sb.append("</head>\n");
+      sb.append("<body>\n");
+      sb.append("<h2>welcome to my very first almost home made Web Server :-)</h2>\n");
+      sb.append("</body>\n");
+      sb.append("</html>\n");
+      response = sb.toString();
+      
       he.sendResponseHeaders(200, response.length());
       try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
         pw.print(response); //What happens if we use a println instead of print --> Explain
