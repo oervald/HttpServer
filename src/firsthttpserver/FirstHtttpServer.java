@@ -1,6 +1,5 @@
 package firsthttpserver;
 
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -30,8 +29,6 @@ public class FirstHtttpServer {
     @Override
     public void handle(HttpExchange he) throws IOException {
       String response = "Welcome to my very first almost home made Web Server :-)";
-      Headers h = he.getResponseHeaders();
-      h.add("Content-Type", "text/html");
       he.sendResponseHeaders(200, response.length());
       try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
         pw.print(response); //What happens if we use a println instead of print --> Explain
