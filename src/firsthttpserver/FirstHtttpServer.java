@@ -1,11 +1,16 @@
 package firsthttpserver;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author DHDC
@@ -20,6 +25,7 @@ public class FirstHtttpServer {
     }
     HttpServer server = HttpServer.create(new InetSocketAddress(ip,port), 0);
     server.createContext("/welcome", new RequestHandler());
+    server.createContext("/headers", new RequestHeaders());
     server.setExecutor(null); // Use the default executor
     server.start();
     System.out.println("Server started, listening on port: "+port);
@@ -42,11 +48,55 @@ public class FirstHtttpServer {
       sb.append("</body>\n");
       sb.append("</html>\n");
       response = sb.toString();
-      
+      Headers h = he.getResponseHeaders();
+      h.add("Content-Type", "text/html");
       he.sendResponseHeaders(200, response.length());
       try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
         pw.print(response); //What happens if we use a println instead of print --> Explain
       }
+    }
+    
+  }
+  static class RequestHeaders implements HttpHandler {
+    @Override
+    public void handle (HttpExchange he) throws IOException{
+     String response = "welcome to my very first almost home made Web Server :-)";
+      StringBuilder sb = new StringBuilder();
+      String text = "";
+      Map headers = he.getRequestHeaders();
+      List keys;
+        for (int i = 0; i < headers.size(); i++) {
+            keys.add(i);
+        }
+      
+//      Collection val = headers.values();
+//      Array key  = headers.keySet().;
+//      Object values [] = val.toArray();
+//        for (Object value : values) {
+//            text += value;
+//        }
+        System.out.println(text);
+     
+      sb.append("<!DOCTYPE html>\n");
+      sb.append("<html>\n");
+      sb.append("<head>\n");
+      sb.append("<title>My fancy Web Site</title>\n");
+      sb.append("<meta charset='UTF-8'>\n");
+      sb.append("</head>\n");
+      sb.append("<body>\n");
+      
+      sb.append("HEJ");
+      sb.append("</body>\n");
+      sb.append("</html>\n");
+      response = sb.toString();
+      
+      Headers h = he.getResponseHeaders();
+      h.add("Content-Type", "text/html");
+      he.sendResponseHeaders(200, response.length());
+      try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
+        pw.print(response); //What happens if we use a println instead of print --> Explain
+      }
+     
     }
   }
 }
