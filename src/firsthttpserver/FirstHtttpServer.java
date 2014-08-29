@@ -35,6 +35,7 @@ public class FirstHtttpServer
         server.createContext("/welcome", new RequestHandler());
         server.createContext("/headers", new RequestHeaders());
         server.createContext("/pages/", new RequestFile());
+        server.createContext("/parameters", new RequestParameters());
         server.setExecutor(null); // Use the default executor
         server.start();
         System.out.println("Server started, listening on port: " + port);
@@ -144,5 +145,43 @@ public class FirstHtttpServer
             }
         }
 
+    }
+    
+    static class RequestParameters implements HttpHandler{
+        
+        @Override
+        public void handle(HttpExchange he) throws IOException {
+            String parameters = "";
+            StringBuilder sb = new StringBuilder();
+            sb.append("<!DOCTYPE html>\n");
+            sb.append("<html>\n");
+            sb.append("<head>\n");
+            sb.append("<title>My fancy Web Site</title>\n");
+            sb.append("<meta charset='UTF-8'>\n");
+            sb.append("</head>\n");
+            sb.append("<body>\n");
+           String method= he.getRequestMethod();
+           String method2 = method.toUpperCase();
+           if(method2 == "GET"){
+               parameters = he.getRequestURI().getQuery();
+           }
+            sb.append("<h2>Method is: " + method + " </h2>\n");
+            if(!parameters.isEmpty()){
+            sb.append("<h2>Get parameters is: " + parameters + "<h2\n");
+            }
+            sb.append("</body>\n");
+            sb.append("</html>\n");
+           String response = sb.toString();
+            Headers h = he.getResponseHeaders();
+            
+            h.add("Content-Type", "text/html");
+            he.sendResponseHeaders(200, response.length());
+            try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
+                pw.print(response); //What happens if we use a println instead of print --> Explain
+            }
+
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    
     }
 }
