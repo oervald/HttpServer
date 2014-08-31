@@ -160,9 +160,9 @@ public class FirstHtttpServer
             sb.append("<meta charset='UTF-8'>\n");
             sb.append("</head>\n");
             sb.append("<body>\n");
-           String method= he.getRequestMethod();
-           String method2 = method.toUpperCase();
-           if(method2 == "GET"){
+           String method= he.getRequestMethod().toUpperCase();
+           
+           if(method == "GET"){
                parameters = he.getRequestURI().getQuery();
            }
             sb.append("<h2>Method is: " + method + " </h2>\n");
