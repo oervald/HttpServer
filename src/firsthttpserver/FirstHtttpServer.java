@@ -15,18 +15,17 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * @author DHDC DAVID COMMIT TEST
  */
-public class FirstHtttpServer
-{
+public class FirstHtttpServer {
 
     static int port = 8080;
     static String ip = "127.0.0.1";
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         if (args.length == 2) {
             port = Integer.parseInt(args[0]);
             ip = args[0];
@@ -41,12 +40,10 @@ public class FirstHtttpServer
         System.out.println("Server started, listening on port: " + port);
     }
 
-    static class RequestHandler implements HttpHandler
-    {
+    static class RequestHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange he) throws IOException
-        {
+        public void handle(HttpExchange he) throws IOException {
             String response = "welcome to my very first almost home made Web Server :-)";
 
             StringBuilder sb = new StringBuilder();
@@ -71,16 +68,13 @@ public class FirstHtttpServer
 
     }
 
-    static class RequestHeaders implements HttpHandler
-    {
+    static class RequestHeaders implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange he) throws IOException
-        {
+        public void handle(HttpExchange he) throws IOException {
             Headers headers = he.getRequestHeaders();
             String response = "";
             StringBuilder sb = new StringBuilder();
-            
 
             sb.append("<!DOCTYPE html>");
             sb.append("<html>");
@@ -93,13 +87,13 @@ public class FirstHtttpServer
             sb.append("<tr>");
             sb.append("<th>Header</th><th>Values</th>");
             sb.append("</tr>");
-            for(Map.Entry<String,List<String>> entry : headers.entrySet()){
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
                 sb.append("<tr>");
                 sb.append("<td>");
                 sb.append(entry.getKey());
                 sb.append("</td>");
                 sb.append("<td>");
-                for (String value : entry.getValue()){
+                for (String value : entry.getValue()) {
                     sb.append(value);
                     sb.append("<br>");
                 }
@@ -122,23 +116,22 @@ public class FirstHtttpServer
 
         }
     }
-    static class RequestFile implements HttpHandler
-    {
+
+    static class RequestFile implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange he) throws IOException
-        {
+        public void handle(HttpExchange he) throws IOException {
             String contentFolder = "public/";
             String response = "";
-            File file = new File(contentFolder+"index.html");
-            byte [] bytesToSend = new byte[(int) file.length()];
-            try{
+            File file = new File(contentFolder + "index.html");
+            byte[] bytesToSend = new byte[(int) file.length()];
+            try {
                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
                 bis.read(bytesToSend, 0, bytesToSend.length);
-            } catch (IOException ie){
+            } catch (IOException ie) {
                 ie.printStackTrace();
             }
-            
+
             he.sendResponseHeaders(200, response.length());
             try (OutputStream os = he.getResponseBody()) {
                 os.write(bytesToSend, 0, bytesToSend.length);
@@ -146,12 +139,12 @@ public class FirstHtttpServer
         }
 
     }
-    
-    static class RequestParameters implements HttpHandler{
-        
+
+    static class RequestParameters implements HttpHandler {
+
         @Override
         public void handle(HttpExchange he) throws IOException {
-            String parameters = "";
+
             StringBuilder sb = new StringBuilder();
             sb.append("<!DOCTYPE html>\n");
             sb.append("<html>\n");
@@ -160,20 +153,30 @@ public class FirstHtttpServer
             sb.append("<meta charset='UTF-8'>\n");
             sb.append("</head>\n");
             sb.append("<body>\n");
-           String method= he.getRequestMethod().toUpperCase();
-           
-           if(method == "GET"){
-               parameters = he.getRequestURI().getQuery();
-           }
+
+            String method = he.getRequestMethod().toUpperCase();
+            String getParameters = he.getRequestURI().getQuery();
+            System.out.println("XXXXXXXXXXXXXXXXXXX" + method);
+            System.out.println("XXXXXXXXXXXXXXXXXXX" + getParameters);
+
             sb.append("<h2>Method is: " + method + " </h2>\n");
-            if(!parameters.isEmpty()){
-            sb.append("<h2>Get parameters is: " + parameters + "<h2\n");
+            if (method == "GET") {
+                sb.append("<h2>Get parameters is: " + getParameters + "</h2>\n");
+                System.out.println(getParameters);
             }
+            if (method == "POST") {
+                Scanner scan = new Scanner(he.getRequestBody());
+                while (scan.hasNext()) {
+                    sb.append("Request body, with Post-parameters: " + scan.nextLine());
+                    sb.append("</br>");
+                }
+            }
+
             sb.append("</body>\n");
             sb.append("</html>\n");
-           String response = sb.toString();
+            String response = sb.toString();
             Headers h = he.getResponseHeaders();
-            
+
             h.add("Content-Type", "text/html");
             he.sendResponseHeaders(200, response.length());
             try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
@@ -182,6 +185,6 @@ public class FirstHtttpServer
 
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-    
+
     }
 }
