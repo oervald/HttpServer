@@ -20,12 +20,14 @@ import java.util.Scanner;
 /**
  * @author DHDC DAVID COMMIT TEST
  */
-public class FirstHtttpServer {
+public class FirstHtttpServer
+{
 
     static int port = 8080;
     static String ip = "127.0.0.1";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
         if (args.length == 2) {
             port = Integer.parseInt(args[0]);
             ip = args[0];
@@ -40,10 +42,12 @@ public class FirstHtttpServer {
         System.out.println("Server started, listening on port: " + port);
     }
 
-    static class RequestHandler implements HttpHandler {
+    static class RequestHandler implements HttpHandler
+    {
 
         @Override
-        public void handle(HttpExchange he) throws IOException {
+        public void handle(HttpExchange he) throws IOException
+        {
             String response = "welcome to my very first almost home made Web Server :-)";
 
             StringBuilder sb = new StringBuilder();
@@ -68,10 +72,12 @@ public class FirstHtttpServer {
 
     }
 
-    static class RequestHeaders implements HttpHandler {
+    static class RequestHeaders implements HttpHandler
+    {
 
         @Override
-        public void handle(HttpExchange he) throws IOException {
+        public void handle(HttpExchange he) throws IOException
+        {
             Headers headers = he.getRequestHeaders();
             String response = "";
             StringBuilder sb = new StringBuilder();
@@ -117,10 +123,12 @@ public class FirstHtttpServer {
         }
     }
 
-    static class RequestFile implements HttpHandler {
+    static class RequestFile implements HttpHandler
+    {
 
         @Override
-        public void handle(HttpExchange he) throws IOException {
+        public void handle(HttpExchange he) throws IOException
+        {
             String contentFolder = "public/";
             String response = "";
             File file = new File(contentFolder + "index.html");
@@ -140,40 +148,37 @@ public class FirstHtttpServer {
 
     }
 
-    static class RequestParameters implements HttpHandler {
+    static class RequestParameters implements HttpHandler
+    {
 
         @Override
-        public void handle(HttpExchange he) throws IOException {
-
+        public void handle(HttpExchange he) throws IOException
+        {
             StringBuilder sb = new StringBuilder();
-            sb.append("<!DOCTYPE html>\n");
-            sb.append("<html>\n");
-            sb.append("<head>\n");
-            sb.append("<title>My fancy Web Site</title>\n");
-            sb.append("<meta charset='UTF-8'>\n");
-            sb.append("</head>\n");
-            sb.append("<body>\n");
-
+            sb.append("<!DOCTYPE html>");
+            sb.append("<html>");
+            sb.append("<head>");
+            sb.append("<title>My fancy Web Site</title>");
+            sb.append("<meta charset='UTF-8'>");
+            sb.append("</head>");
+            sb.append("<body>");
             String method = he.getRequestMethod().toUpperCase();
-            String getParameters = he.getRequestURI().getQuery();
-            System.out.println("XXXXXXXXXXXXXXXXXXX" + method);
-            System.out.println("XXXXXXXXXXXXXXXXXXX" + getParameters);
-
-            sb.append("<h2>Method is: " + method + " </h2>\n");
-            if (method == "GET") {
-                sb.append("<h2>Get parameters is: " + getParameters + "</h2>\n");
-                System.out.println(getParameters);
+            String parameters = he.getRequestURI().getQuery();
+            sb.append("<h2>Method is: " + method + "</h2>");
+            if (method.equals("GET")) {
+                sb.append("<h2>GET parameters: " + parameters + "</h2>");
+                System.out.println(parameters);
             }
-            if (method == "POST") {
+            if (method.equals("POST")) {
                 Scanner scan = new Scanner(he.getRequestBody());
                 while (scan.hasNext()) {
-                    sb.append("Request body, with Post-parameters: " + scan.nextLine());
+                    sb.append("POST parameters: " + scan.nextLine());
                     sb.append("</br>");
                 }
             }
 
-            sb.append("</body>\n");
-            sb.append("</html>\n");
+            sb.append("</body>");
+            sb.append("</html>");
             String response = sb.toString();
             Headers h = he.getResponseHeaders();
 
