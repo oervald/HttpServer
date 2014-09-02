@@ -10,21 +10,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
- * @author DHDC DAVID COMMIT TEST
- */
 public class FirstHtttpServer
 {
 
     static int port = 8080;
-    static String ip = "127.0.0.1";
+    static String ip = "localhost";
 
     public static void main(String[] args) throws Exception
     {
@@ -37,14 +32,13 @@ public class FirstHtttpServer
         server.createContext("/headers", new RequestHeaders());
         server.createContext("/pages/", new RequestFile());
         server.createContext("/parameters", new RequestParameters());
-        server.setExecutor(null); // Use the default executor
+        server.setExecutor(null); 
         server.start();
         System.out.println("Server started, listening on port: " + port);
     }
 
     static class RequestHandler implements HttpHandler
     {
-
         @Override
         public void handle(HttpExchange he) throws IOException
         {
