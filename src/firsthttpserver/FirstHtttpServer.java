@@ -88,17 +88,16 @@ public class FirstHtttpServer
             sb.append("<th>Header</th><th>Values</th>");
             sb.append("</tr>");
             for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-                sb.append("<tr>");
-                sb.append("<td>");
-                sb.append(entry.getKey());
-                sb.append("</td>");
-                sb.append("<td>");
-                for (String value : entry.getValue()) {
-                    sb.append(value);
-                    sb.append("<br>");
-                }
-                sb.append("</td>");
-                sb.append("</tr>");
+                sb.append("<tr><td>" + entry.getKey() + "</td>");
+                sb.append("<td>" + entry.getValue() + "</td></tr>");
+                
+//                sb.append("<td>");
+//                for (String value : entry.getValue()) {
+//                    sb.append(value);
+//                    sb.append("<br>");
+//                }
+//                sb.append("</td>");
+//                sb.append("</tr>");
             }
             sb.append("</tr>");
             sb.append("</tr>");
@@ -125,7 +124,8 @@ public class FirstHtttpServer
         {
             String contentFolder = "public/";
             String response = "";
-            File file = new File(contentFolder + "index.html");
+            String path = he.getRequestURI().getPath().substring(6);
+            File file = new File(contentFolder + path);
             byte[] bytesToSend = new byte[(int) file.length()];
             try {
                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
