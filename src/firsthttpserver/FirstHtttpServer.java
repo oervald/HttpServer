@@ -32,13 +32,15 @@ public class FirstHtttpServer
         server.createContext("/headers", new RequestHeaders());
         server.createContext("/pages/", new RequestFile());
         server.createContext("/parameters", new RequestParameters());
-        server.setExecutor(null); 
+        server.createContext("/", new RequestFiles());
+        server.setExecutor(null);
         server.start();
         System.out.println("Server started, listening on port: " + port);
     }
 
     static class RequestHandler implements HttpHandler
     {
+
         @Override
         public void handle(HttpExchange he) throws IOException
         {
@@ -90,7 +92,7 @@ public class FirstHtttpServer
             for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
                 sb.append("<tr><td>" + entry.getKey() + "</td>");
                 sb.append("<td>" + entry.getValue() + "</td></tr>");
-                
+
 //                sb.append("<td>");
 //                for (String value : entry.getValue()) {
 //                    sb.append(value);
@@ -124,8 +126,7 @@ public class FirstHtttpServer
         {
             String contentFolder = "public/";
             String response = "";
-            String path = he.getRequestURI().getPath().substring(6);
-            File file = new File(contentFolder + path);
+            File file = new File(contentFolder + "index.html");
             byte[] bytesToSend = new byte[(int) file.length()];
             try {
                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
@@ -183,6 +184,41 @@ public class FirstHtttpServer
             }
 
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    static class RequestFiles implements HttpHandler
+    {
+
+        @Override
+        public void handle(HttpExchange he) throws IOException
+        {
+            String contentFolder = "public/";
+            String response = "";
+            String path = he.getRequestURI().getPath();
+            System.out.println("XXXXXXXXXXXXXXX " + path);
+            File file;
+            byte[] bytesToSend = null;
+            try {
+                if (path.equals("/")) {
+                    file = new File(contentFolder + "index.html");
+                    bytesToSend = new byte[(int) file.length()];
+                } else {
+                    file = new File(contentFolder + path);
+                    bytesToSend = new byte[(int) file.length()];
+                }
+
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+                bis.read(bytesToSend, 0, bytesToSend.length);
+            } catch (IOException ie) {
+                ie.printStackTrace();
+            }
+
+            he.sendResponseHeaders(200, response.length());
+            try (OutputStream os = he.getResponseBody()) {
+                os.write(bytesToSend, 0, bytesToSend.length);
+            }
         }
 
     }
